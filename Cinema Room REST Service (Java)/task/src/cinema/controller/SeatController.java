@@ -1,70 +1,46 @@
 package cinema.controller;
 
+import cinema.exception.NotAvailableSeatException;
 import cinema.model.Seat;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import cinema.model.Summary;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class SeatController {
 
+    private Summary summary;
 
-    private static class Summary {
-
-        @JsonProperty("total_rows")
-        private int rowCount;
-        @JsonProperty("total_columns")
-        private int columnCount;
-        @JsonProperty("available_seats")
-        private List<Seat> availableSeats;
-
-        {
-            rowCount = 9;
-            columnCount = 9;
-            availableSeats = new ArrayList<>();
-            for (int i = 1; i <= rowCount; i++) {
-                for (int k = 1; k <= columnCount; k++) {
-                    Seat seat = new Seat(i, k);
-                    availableSeats.add(seat);
-                }
-            }
-        }
-
-        public int getRowCount() {
-            return rowCount;
-        }
-
-        public void setRowCount(int rowCount) {
-            this.rowCount = rowCount;
-        }
-
-        public int getColumnCount() {
-            return columnCount;
-        }
-
-        public void setColumnCount(int columnCount) {
-            this.columnCount = columnCount;
-        }
-
-        public List<Seat> getAvailableSeats() {
-            return availableSeats;
-        }
-
-        public void setAvailableSeats(List<Seat> availableSeats) {
-            this.availableSeats = availableSeats;
-        }
+    @Autowired
+    public SeatController(Summary summary) {
+        this.summary = summary;
     }
 
     @GetMapping("/seats")
     public Summary getSeats() {
-        return new Summary();
+        return summary;
     }
 
-    @GetMapping("/one")
-    public int getOne() {
-        return 1;
+    @PostMapping("/purchase")
+    public Seat bookTicket(@RequestBody Seat requestedSeat) {
+        List<Seat> seats = summary.getAvailableSeats();
+        Optional<Seat> seatOptional = seats.stream()
+                .filter(s -> s.getRow() == requestedSeat.getRow())
+                .filter(s -> s.getColumn() == requestedSeat.getColumn())
+                .findAny();
+        Seat seat = seatOptional.orElseThrow(
+                () -> new NotAvailableSeatException("The number of a row or a column is out of bounds!"));
+        if (seat.isBooked()) {
+            throw new NotAvailableSeatException("The ticket has been already purchased!");
+        }
+        seat.setBooked(true);
+        return seat;
     }
 }
