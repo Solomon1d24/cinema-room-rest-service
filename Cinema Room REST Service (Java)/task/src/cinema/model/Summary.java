@@ -1,9 +1,11 @@
 package cinema.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class Summary {
 
@@ -14,10 +16,14 @@ public class Summary {
     @JsonProperty("available_seats")
     private List<Seat> availableSeats;
 
-    public Summary(int rowCount, int columnCount, List<Seat> availableSeats) {
+    @JsonIgnore
+    private Map<UUID,Ticket> soldTickets;
+
+    public Summary(int rowCount, int columnCount, List<Seat> availableSeats, Map<UUID, Ticket> soldTickets) {
         this.rowCount = rowCount;
         this.columnCount = columnCount;
         this.availableSeats = availableSeats;
+        this.soldTickets = soldTickets;
     }
 
     public Summary() {
@@ -45,5 +51,13 @@ public class Summary {
 
     public void setAvailableSeats(List<Seat> availableSeats) {
         this.availableSeats = availableSeats;
+    }
+
+    public Map<UUID, Ticket> getSoldTickets() {
+        return soldTickets;
+    }
+
+    public void setSoldTickets(Map<UUID, Ticket> soldTickets) {
+        this.soldTickets = soldTickets;
     }
 }
