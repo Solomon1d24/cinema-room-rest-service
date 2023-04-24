@@ -17,6 +17,9 @@ public class Summary {
     private List<Seat> availableSeats;
 
     @JsonIgnore
+    private Statistics statistics;
+
+    @JsonIgnore
     private Map<UUID,Ticket> soldTickets;
 
     public Summary(int rowCount, int columnCount, List<Seat> availableSeats, Map<UUID, Ticket> soldTickets) {
@@ -59,5 +62,13 @@ public class Summary {
 
     public void setSoldTickets(Map<UUID, Ticket> soldTickets) {
         this.soldTickets = soldTickets;
+    }
+
+    public Statistics getStatistics() {
+        int currentIncome = soldTickets.values().stream().mapToInt(t -> t.getSeat().getPrice()).sum();
+        int numberOfAvailableSeats = availableSeats.size() - soldTickets.size();
+        int numberOfPurchasedTickets = soldTickets.size();
+        statistics = new Statistics(currentIncome,numberOfAvailableSeats,numberOfPurchasedTickets);
+        return statistics;
     }
 }

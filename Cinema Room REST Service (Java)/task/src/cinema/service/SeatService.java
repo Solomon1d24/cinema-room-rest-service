@@ -2,18 +2,17 @@ package cinema.service;
 
 import cinema.dto.RefundTicketDTO;
 import cinema.exception.NotAvailableSeatException;
+import cinema.exception.WrongPasswordException;
 import cinema.exception.WrongTokenException;
 import cinema.model.Seat;
+import cinema.model.Statistics;
 import cinema.model.Summary;
 import cinema.model.Ticket;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class SeatService {
@@ -62,5 +61,12 @@ public class SeatService {
         soldTickets.remove(ticket.getToken(), soldTicket);
 
         return modelMapper.map(soldTicket, RefundTicketDTO.class);
+    }
+
+    public Statistics getStatistics(String password) throws WrongPasswordException {
+        if (Objects.equals(null, password) || !password.equals("super_secret")) {
+            throw new WrongPasswordException("The password is wrong!");
+        }
+        return summary.getStatistics();
     }
 }

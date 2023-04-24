@@ -4,14 +4,12 @@ import cinema.dto.RefundTicketDTO;
 import cinema.exception.NotAvailableSeatException;
 import cinema.exception.WrongTokenException;
 import cinema.model.Seat;
+import cinema.model.Statistics;
 import cinema.model.Summary;
 import cinema.model.Ticket;
 import cinema.service.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class SeatController {
@@ -37,4 +35,11 @@ public class SeatController {
     public RefundTicketDTO returnTicket(@RequestBody Ticket ticket) throws WrongTokenException {
         return service.returnTicket(ticket);
     }
+
+    @PostMapping("/stats")
+    public Statistics getStatistics(@RequestParam(required = false) String password){
+        return service.getStatistics(password);
+    }
+
+
 }
