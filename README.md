@@ -137,3 +137,14 @@ If the parameters don't contain a password key or a wrong value has been passed,
     "error": "The password is wrong!"
 }
 ```
+
+### Flow Diagram of the program
+![image](https://user-images.githubusercontent.com/43601920/234141264-c2789a8c-0114-4fbf-a34d-f18d6b50023c.png)
+
+
+
+### UML diagram of the program
+![image](https://user-images.githubusercontent.com/43601920/234141120-f07d6665-3330-46da-943a-d14c867bc3b1.png)
+
+
+
